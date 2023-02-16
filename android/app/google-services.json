@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "510231720630",
+    "project_id": "smartly-1e2e7",
+    "storage_bucket": "smartly-1e2e7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510231720630:android:66147c69318b8abcff6c17",
+        "android_client_info": {
+          "package_name": "com.chatgpt.bot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510231720630-8vpi9627dul19d1tbhbc1mv0km213mdc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chatgpt.bot",
+            "certificate_hash": "60fd5d672cc880b6aac3ddd95f9a7b1cc3b93043"
+          }
+        },
+        {
+          "client_id": "510231720630-mvo4hg2au7n5p5e1vml09rta86uqmu33.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.chatgpt.bot",
+            "certificate_hash": "d087f0616fb1139bc19edc18f549f3dd3a1c1eb1"
+          }
+        },
+        {
+          "client_id": "510231720630-vitjtjub4bk42cpt3fke58miotuqji38.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHtbz7Wo0_CN7M4VBEQH73AoWfsak1wcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510231720630-vitjtjub4bk42cpt3fke58miotuqji38.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
