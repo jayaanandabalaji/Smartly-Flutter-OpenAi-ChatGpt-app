@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:psychology/utils/constants.dart';
+
+import '../utils/constants.dart';
 
 class ChatGptApi {
   Future<String> getMessageFromChatGPT(String message) async {
