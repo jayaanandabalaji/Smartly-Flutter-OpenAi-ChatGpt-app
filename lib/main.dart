@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-import 'package:psychology/code.dart';
-import 'package:psychology/dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'constants.dart';
-import 'imageGeneration.dart';
-import 'singleChat.dart';
+import 'screens/code_generate.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/translate_screen.dart';
+import 'utils/constants.dart';
+import 'screens/image_generate.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,20 +30,20 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: MaterialColor(0xff374DBC, colorMap),
       ),
-      home: app(),
+      home: const NavBar(),
     );
   }
 }
 
-class app extends StatefulWidget {
-  const app({super.key});
+class NavBar extends StatefulWidget {
+  const NavBar({super.key});
 
   @override
-  State<app> createState() => _appState();
+  State<NavBar> createState() => _NavBarState();
 }
 
-class _appState extends State<app> {
-  PersistentTabController _controller =
+class _NavBarState extends State<NavBar> {
+  final PersistentTabController _controller =
       PersistentTabController(initialIndex: 0);
 
   @override
@@ -51,26 +51,37 @@ class _appState extends State<app> {
     return PersistentTabView(
       context,
       controller: _controller,
-      navBarStyle: NavBarStyle.style5,
-      backgroundColor: backgroundColor,
-      screens: [dashboard(), codeScreen(), imageGeneration()],
+      navBarStyle: NavBarStyle.style3,
+      backgroundColor: Constants.backgroundColor,
+      screens: const [
+        Dashboard(),
+        CodeScreen(),
+        ImageGeneration(),
+        TranslateScreen()
+      ],
       items: [
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.message),
+          icon: const Icon(Icons.message),
           title: ("Chat"),
-          activeColorPrimary: primaryColor,
+          activeColorPrimary: Constants.primaryColor,
           inactiveColorPrimary: Colors.grey,
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.code),
+          icon: const Icon(Icons.code),
           title: ("Code"),
-          activeColorPrimary: primaryColor,
+          activeColorPrimary: Constants.primaryColor,
           inactiveColorPrimary: Colors.grey,
         ),
         PersistentBottomNavBarItem(
-          icon: Icon(Icons.image),
+          icon: const Icon(Icons.image),
           title: ("Image"),
-          activeColorPrimary: primaryColor,
+          activeColorPrimary: Constants.primaryColor,
+          inactiveColorPrimary: Colors.grey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(Icons.language),
+          title: ("Translate"),
+          activeColorPrimary: Constants.primaryColor,
           inactiveColorPrimary: Colors.grey,
         ),
       ],

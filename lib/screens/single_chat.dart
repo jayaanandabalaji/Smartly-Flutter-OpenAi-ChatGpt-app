@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -10,10 +10,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'constants.dart';
+import '../utils/constants.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({required this.chat});
+  const ChatPage({super.key, required this.chat});
   final List chat;
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -27,6 +27,9 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     initMessagedFromSharedPrefsValue();
     name = widget.chat[0];
+    if (Constants.showAds) {
+      _createInterstitialAd();
+    }
     setState(() {});
   }
 
@@ -40,6 +43,56 @@ class _ChatPageState extends State<ChatPage> {
     if (messages.isNotEmpty) {
       _controller.jumpTo(_controller.position.maxScrollExtent);
     }
+  }
+
+  InterstitialAd? _interstitialAd;
+  int _numInterstitialLoadAttempts = 0;
+  int maxFailedLoadAttempts = 3;
+  bool adloaded = false;
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+        adUnitId: Constants.interstitialUnitId,
+        request: const AdRequest(
+          nonPersonalizedAds: false,
+        ),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            _interstitialAd = ad;
+            _numInterstitialLoadAttempts = 0;
+            _interstitialAd!.setImmersiveMode(true);
+            if (!adloaded) {
+              _showInterstitialAd();
+              adloaded = true;
+            }
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            _numInterstitialLoadAttempts += 1;
+            _interstitialAd = null;
+            if (_numInterstitialLoadAttempts < maxFailedLoadAttempts) {
+              _createInterstitialAd();
+            }
+          },
+        ));
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd == null) {
+      return;
+    }
+    _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (InterstitialAd ad) => {},
+      onAdDismissedFullScreenContent: (InterstitialAd ad) {
+        ad.dispose();
+        _createInterstitialAd();
+      },
+      onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
+        ad.dispose();
+        _createInterstitialAd();
+      },
+    );
+    _interstitialAd!.show();
+    _interstitialAd = null;
   }
 
   List<dynamic> messages = [];
@@ -64,35 +117,36 @@ class _ChatPageState extends State<ChatPage> {
             child: Container(
                 height: Get.height * 0.25,
                 width: Get.width * 0.8,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: secondaryColor),
+                    color: Constants.secondaryColor),
                 child: Column(
                   children: [
-                    SizedBox(height: 15),
-                    Text("Rename chat",
+                    const SizedBox(height: 15),
+                    const Text("Rename chat",
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 18)),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TextFormField(
                         controller: renameController,
                         focusNode: fn,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     InkWell(
                       onTap: () async {
                         await rename();
@@ -100,17 +154,17 @@ class _ChatPageState extends State<ChatPage> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: primaryColor,
+                            color: Constants.primaryColor,
                             borderRadius: BorderRadius.circular(10)),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                        child: Text(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: const Text(
                           "Rename",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                   ],
                 )),
           );
@@ -120,7 +174,7 @@ class _ChatPageState extends State<ChatPage> {
   TextEditingController renameController = TextEditingController();
 
   rename() async {
-    if (renameController.text != null && renameController.text != "") {
+    if (renameController.text != "") {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<dynamic> categories = jsonDecode(prefs.getString("cat")!);
       for (int i = 0; i < categories.length; i++) {
@@ -142,7 +196,7 @@ class _ChatPageState extends State<ChatPage> {
         title: Row(
           children: [
             Text(name),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             IconButton(
@@ -151,7 +205,7 @@ class _ChatPageState extends State<ChatPage> {
                   fn.requestFocus();
                   renameController.text = name;
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.edit,
                   color: Colors.white,
                   size: 16,
@@ -187,7 +241,7 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      backgroundColor: backgroundColor,
+      backgroundColor: Constants.backgroundColor,
       body: (messages.isEmpty)
           ? SizedBox(
               width: Get.width,
@@ -257,11 +311,12 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget bottomSendMessage() {
     return Container(
-      color: backgroundColor,
+      color: Constants.backgroundColor,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: Container(
         decoration: BoxDecoration(
-            color: secondaryColor, borderRadius: BorderRadius.circular(20)),
+            color: Constants.secondaryColor,
+            borderRadius: BorderRadius.circular(20)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
           children: [
@@ -291,7 +346,7 @@ class _ChatPageState extends State<ChatPage> {
                 width: 45,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    color: isSending ? Colors.grey : primaryColor,
+                    color: isSending ? Colors.grey : Constants.primaryColor,
                     shape: BoxShape.circle),
                 padding: const EdgeInsets.all(10),
                 child: const Center(
@@ -317,7 +372,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
           decoration: BoxDecoration(
-              color: primaryColor,
+              color: Constants.primaryColor,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -339,7 +394,7 @@ class _ChatPageState extends State<ChatPage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
           decoration: BoxDecoration(
-              color: secondaryColor,
+              color: Constants.secondaryColor,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -362,25 +417,20 @@ class _ChatPageState extends State<ChatPage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
           decoration: BoxDecoration(
-              color: secondaryColor,
+              color: Constants.secondaryColor,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                   bottomRight: Radius.circular(20))),
-          child: Container(
-            child: Linkify(
-              onOpen: (link) async {
-                print("Clicked ${link.url}!");
-                if (!await launchUrl(Uri.parse(link.url))) {
-                  throw Exception('Could not launch $link.url');
-                }
-              },
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w400),
-              text: message,
-            ),
+          child: Linkify(
+            onOpen: (link) async {
+              if (!await launchUrl(Uri.parse(link.url))) {
+                throw Exception('Could not launch $link.url');
+              }
+            },
+            style: const TextStyle(
+                color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),
+            text: message,
           )),
     );
   }
@@ -422,7 +472,6 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<String> getMessageFromChatGPT(String message1) async {
     try {
-      log("getting message from chatgpt $message1");
       http.Response response =
           await http.post(Uri.parse("https://api.openai.com/v1/completions"),
               headers: {
@@ -440,12 +489,10 @@ class _ChatPageState extends State<ChatPage> {
                 "presence_penalty": 0.6,
                 "stop": [" Human:", " AI:"]
               }));
-      log("got response");
       return (jsonDecode(response.body)["choices"][0]["text"] as String)
           .replaceFirst("\n", "")
           .replaceFirst("\n", "");
     } catch (e) {
-      log("err $e");
       return "";
     }
   }

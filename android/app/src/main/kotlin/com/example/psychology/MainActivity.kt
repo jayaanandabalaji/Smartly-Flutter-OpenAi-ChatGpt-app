@@ -1,4 +1,4 @@
-package com.example.psychology
+package com.chatgpt.bot
 
 import io.flutter.embedding.android.FlutterActivity
 
