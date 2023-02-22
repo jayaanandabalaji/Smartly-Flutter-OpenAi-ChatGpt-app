@@ -10,7 +10,7 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../services/chat_gpt_api.dart';
+import '../services/open_ai_api.dart';
 import '../utils/constants.dart';
 
 class ImageGeneration extends StatefulWidget {

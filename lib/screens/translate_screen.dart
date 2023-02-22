@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../services/chat_gpt_api.dart';
+import '../services/open_ai_api.dart';
 import '../utils/constants.dart';
 
 class TranslateScreen extends StatefulWidget {
@@ -56,7 +55,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                   child: Row(
                     children: [
                       Text(fromTranslation,
-                          style: const TextStyle(color: Colors.white, fontSize: 18)),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18)),
                       const SizedBox(
                         width: 2,
                       ),
@@ -75,7 +75,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
                   child: Row(
                     children: [
                       Text(toTranslation,
-                          style: const TextStyle(color: Colors.white, fontSize: 18)),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18)),
                       const SizedBox(
                         width: 2,
                       ),
@@ -109,7 +110,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
               Container(
                 width: Get.width,
                 height: 200,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10)),
@@ -140,7 +142,8 @@ class _TranslateScreenState extends State<TranslateScreen> {
               height: Get.height * 0.35,
               width: Get.width,
               child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   physics: const BouncingScrollPhysics(),
                   children: [
                     Text("Change language",

@@ -4,7 +4,7 @@ import 'package:flutter_highlight/flutter_highlight.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../services/chat_gpt_api.dart';
+import '../services/open_ai_api.dart';
 import '../utils/constants.dart';
 import 'package:share_plus/share_plus.dart';
 
