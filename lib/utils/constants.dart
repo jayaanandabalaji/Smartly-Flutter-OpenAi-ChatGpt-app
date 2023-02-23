@@ -5,7 +5,7 @@ class Constants {
   static Color secondaryColor = const Color(0xff30343F);
   static Color backgroundColor = const Color(0xff1D212C);
   static String openAIApiKey =
-      "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";
+      "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";
   static bool showAds = true;
   static String interstitialUnitId = 'ca-app-pub-3940256099942544/1033173712';
 
